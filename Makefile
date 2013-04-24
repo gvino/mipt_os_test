@@ -1,6 +1,6 @@
 ############################################################################
 # Makefile to build and run simple OS on VirtualBox (tm) Virtual Machines. #
-# VERSION 0.0.2                                                            #
+# VERSION 0.0.3                                                            #
 # AUTHOR  George A. Vinogradov <g-vino@yandex.ru>, <g.vinogradov@itima.ru> #
 # Please feel free to send feedback :)                                     #
 ############################################################################
@@ -53,10 +53,10 @@ VM_STOP 	= ($(VB_CONTROL) controlvm $(VM_NAME)	  \
 		   	   && echo "VM successfully stopped")	  \
 		   	   || echo "Couldn't stop VM. Is it running? (Check logfile)"
 
-VM_RESTART = ($(VB_CONTROL) controlvm $(VM_NAME)	  \
-			  reset									  \
-			  $(T_ERR_LOGGED)						  \
-			  && echo "Successfully restarted...")
+VM_RESTART 	= ($(VB_CONTROL) controlvm $(VM_NAME)	  \
+			   reset								  \
+			   $(T_ERR_LOGGED)						  \
+			   && echo "Successfully restarted...")
 
 
 all: img
@@ -69,11 +69,13 @@ $(IMAGE_NAME).img:
 
 img: $(IMAGE_NAME).img $(BIN)
 	dd bs=512 count=1 if=$(BIN) of=$<
+	cp $(BIN) $(BIN:.bin=.dsk)
 
 clean:
 	@$(VM_STOP)
 	rm -rf $(BIN)
 	rm -rf $(IMAGE_NAME).img
+	rm -rf *.dsk
 
 #TODO add VM setup
 
