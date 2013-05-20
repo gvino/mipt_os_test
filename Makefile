@@ -18,6 +18,8 @@ ASMC_FLAGS = -fbin
 VB_CONTROL = VBoxManage
 VB_CONTROL_ERR = ./log
 
+SCREENSHOT_FNAME = ./screenshot.png
+
 # It's kind of Unix magic. Piping stderr to next command:
 # cmd1 3>&1 1>&2 2>&3 3>&- | cmd2
 
@@ -47,6 +49,10 @@ VM_ADDMEDIA = ($(VB_CONTROL) storageattach $(VM_NAME) \
 VM_START 	= ($(VB_CONTROL) startvm $(VM_NAME)	  	  \
 		       $(T_ERR_LOGGED))
 
+VM_START_H 	= ($(VB_CONTROL) startvm --type headless  \
+			   $(VM_NAME)	  	  					  \
+		       $(T_ERR_LOGGED))
+
 VM_STOP 	= ($(VB_CONTROL) controlvm $(VM_NAME)	  \
 			   poweroff								  \
 		   	   $(T_ERR_LOGGED)						  \
@@ -57,6 +63,10 @@ VM_RESTART 	= ($(VB_CONTROL) controlvm $(VM_NAME)	  \
 			   reset								  \
 			   $(T_ERR_LOGGED)						  \
 			   && echo "Successfully restarted...")
+
+VM_SCREENSHOT = ($(VB_CONTROL) controlvm $(VM_NAME)   \
+				 screenshotpng $(SCREENSHOT_FNAME)    \
+				 && echo "Screenshot taken")
 
 
 all: img
@@ -76,12 +86,18 @@ clean:
 	rm -rf $(BIN)
 	rm -rf $(IMAGE_NAME).img
 	rm -rf *.dsk
+	rm -rf *.png
 
 #TODO add VM setup
 
 vm_load: img
 	@$(VM_ADDMEDIA)
-	@$(VM_START) || $(VM_RESTART) || echo "Something went wrong..."
+	@$(VM_START_H) || $(VM_RESTART) || echo "Something went wrong..."
+	@sleep 5
 
 vm_start:
-	@$(VM_START) || echo "Already started"
+	@$(VM_START_H) || echo "Already started"
+
+vm_screenshot: vm_load
+	@$(VM_SCREENSHOT)
+
