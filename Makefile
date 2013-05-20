@@ -20,6 +20,7 @@ VB_CONTROL_ERR = ./log
 
 SCREENSHOT_FNAME = ./screenshot.png
 TEST_SCRIPT = $(realpath ./tests/test.sh)
+TEST_FOLDER = $(realpath ./tests/)
 
 # It's kind of Unix magic. Piping stderr to next command:
 # cmd1 3>&1 1>&2 2>&3 3>&- | cmd2
@@ -103,6 +104,7 @@ vm_screenshot: vm_load
 	@$(VM_SCREENSHOT)
 
 test: vm_screenshot
-	@$(TEST_SCRIPT)
+	@cp $(SCREENSHOT_FNAME) $(TEST_FOLDER)
+	#@$(TEST_SCRIPT)
 	@$(VM_STOP)
 
