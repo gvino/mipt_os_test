@@ -94,13 +94,18 @@ clean:
 
 vm_load: img
 	@$(VM_ADDMEDIA)
+	@$(VM_START) || $(VM_RESTART) || echo "Something went wrong..."
+	@sleep 5
+
+vm_load_headless :img
+	@$(VM_ADDMEDIA)
 	@$(VM_START_H) || $(VM_RESTART) || echo "Something went wrong..."
 	@sleep 5
 
 vm_start:
-	@$(VM_START_H) || echo "Already started"
+	@$(VM_START) || echo "Already started"
 
-vm_screenshot: vm_load
+vm_screenshot: vm_load_headless
 	@$(VM_SCREENSHOT)
 
 test: vm_screenshot
