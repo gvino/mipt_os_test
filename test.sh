@@ -1,18 +1,27 @@
-#! /usr/bin/bash
+#! /bin/bash
 
-RES1=`compare -metric NCC screenshot.png green.png res.png`
-RES2=`compare -metric NCC screenshot.png red.png res.png`
+RES1=$(compare -metric NCC screenshot.png green.png res.png 2>&1)
+RES2=$(compare -metric NCC screenshot.png red.png res.png  2>&1)
 rm res.png
 
-THR=0.8
+THR="0.5"
 
-if (( $RES1 >= $THR ))
+#echo "X $RES1 X"
+#echo "X $RES2 X"
+
+compare_result=$(echo "$RES1>$THR" | bc)
+#echo "X$compare_result X"
+
+if [ "$compare_result" == "1" ]
 then
     echo "Memory is OK."
     exit 0
 fi
 
-if (( $RES2 >= $THR ))
+compare_result=$(echo "$RES2>$THR" | bc)
+#echo "X$compare_result X"
+
+if [ "$compare_result" == "1" ]
 then
     echo "Memory is NOT OK!"
     exit 0
