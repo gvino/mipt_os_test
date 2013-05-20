@@ -19,7 +19,7 @@ VB_CONTROL = VBoxManage
 VB_CONTROL_ERR = ./log
 
 SCREENSHOT_FNAME = ./screenshot.png
-TEST_SCRIPT = ./tests/test.sh
+TEST_SCRIPT = $(realpath ./tests/test.sh)
 
 # It's kind of Unix magic. Piping stderr to next command:
 # cmd1 3>&1 1>&2 2>&3 3>&- | cmd2
@@ -104,4 +104,5 @@ vm_screenshot: vm_load
 
 test: vm_screenshot
 	@$(TEST_SCRIPT)
+	@$(VM_STOP)
 
