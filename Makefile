@@ -105,6 +105,6 @@ vm_screenshot: vm_load
 
 test: vm_screenshot
 	@cp $(SCREENSHOT_FNAME) $(TEST_FOLDER)
-	#@$(TEST_SCRIPT)
+	@$(TEST_SCRIPT)
 	@$(VM_STOP)
 
