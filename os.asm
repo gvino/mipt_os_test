@@ -53,7 +53,7 @@ memtest:
     push ebp
     mov ebp, esp
     mov ecx, [ebp + 0x8] ;start addr
-    mov ebx, 0b11110101010010101001010100101010  ;pattern
+    mov ebx, 11110101010010101001010100101010b  ;pattern
     mov edx, [ebp + 0xc] ;end addr
 
 lLoopW:
@@ -146,8 +146,8 @@ gd_reg:
 msg_hello:	db "Hello from the world of 32-bit Protected Mode",0
 msg_ok: db "Memory is ok!", 0
 msg_notok: db "Memory is NOT ok!", 0
-green: db 0b00000010, 0, 0, 0
-red:   db 0b00000100, 0, 0, 0
+green: db 00000010b, 0, 0, 0
+red:   db 00000100b, 0, 0, 0
 
 	times 510-($-$$) db 0
 	db 0xaa, 0x55
