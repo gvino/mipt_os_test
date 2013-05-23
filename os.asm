@@ -89,6 +89,7 @@ lRight:
 lEnd:
     call kputs           ;call kputs
 
+    mov esp, ebp
     pop ebp
     ret
 
@@ -109,9 +110,8 @@ kputs:
 	inc dword [cursor]
 	jmp short .loop
 
-
-
-.quit:	
+.quit:
+    mov esp, ebp
 	pop ebp
 	ret
 		
