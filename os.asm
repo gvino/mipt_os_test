@@ -56,37 +56,37 @@ memtest:
     mov ebx, 11110101010010101001010100101010b  ;pattern
     mov edx, [ebp + 0xc] ;end addr
 
-lLoopW:
+.lLoopW:
     mov dword [ecx], ebx ;pattern to memory
     add ecx, 4           ;ecx += 4
     cmp ecx, edx         ;
-    jg lLoopWEnd         ;if ecx >= edx goto lLoopWEnd
-    jmp lLoopW           ;else jump lLoopW
+    jg .lLoopWEnd        ;if ecx >= edx goto lLoopWEnd
+    jmp .lLoopW          ;else jump lLoopW
 
-lLoopWEnd:
+.lLoopWEnd:
 
     mov ecx, [ebp + 0x8] ;start addr
 ;    mov [67108764], byte 0
 
-lLoopR:
+.lLoopR:
     mov eax, dword [ecx] ;memory to eax
     cmp eax, ebx         ;cmp
-    jne short lWrong     ;if wrong goto lWrong
+    jne short .lWrong    ;if wrong goto lWrong
     add ecx, 4           ;ecx += 4
     cmp ecx, edx         ;
-    jg lRight            ;if ecx<=edx goto lLoopR
-    jmp lLoopR           ;else jump lLoopR
+    jg .lRight           ;if ecx<=edx goto lLoopR
+    jmp .lLoopR          ;else jump lLoopR
 
-lWrong:
-    mov esi, msg_notok   ;text msg not ok
+.lWrong:
     push dword [red]     ;not ok color
-    jmp lEnd
+    push msg_notok       ;text msg not ok
+    jmp .lEnd
 
-lRight:
-    mov esi, msg_ok      ;text msg ok
+.lRight:
     push dword [green]   ;ok color
+    push msg_ok          ;text msg ok
 
-lEnd:
+.lEnd:
     call kputs           ;call kputs
 
     mov esp, ebp
@@ -95,11 +95,13 @@ lEnd:
 
 ;; Функция выполняет прямой вывод в память видеоадаптера
 ;; которая находится в VGA-картах (и не только) по адресу 0xB8000
+;; arguments: kputs(char* str, char color)
 	
 kputs:
     push ebp
     mov ebp, esp
-    mov bl, byte [ebp + 8]
+    mov esi, [ebp + 0x8]
+    mov bl, byte [ebp + 0xc]
 .loop:	
 	lodsb 
 	test al, al
@@ -115,7 +117,6 @@ kputs:
 	pop ebp
 	ret
 		
-
 gdt:
 	dw 0, 0, 0, 0	; Нулевой дескриптор
 
@@ -137,13 +138,11 @@ gdt:
 	db 0xCF
 	db 0x00
 
-
 	;; Значение, которое мы загрузим в GDTR:	
 gd_reg:
 	dw 8192
 	dd gdt
 
-msg_hello:	db "Hello from the world of 32-bit Protected Mode",0
 msg_ok: db "Memory is ok!", 0
 msg_notok: db "Memory is NOT ok!", 0
 green: db 00000010b, 0, 0, 0
@@ -151,5 +150,3 @@ red:   db 00000100b, 0, 0, 0
 
 	times 510-($-$$) db 0
 	db 0xaa, 0x55
-
-
